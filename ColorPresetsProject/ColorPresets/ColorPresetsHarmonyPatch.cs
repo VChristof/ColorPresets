@@ -18,7 +18,7 @@ public class ColorPresetsMainMod : BaseSpaceWarpPlugin
 {
     public const string ModGuid = "com.vchristof.color_presets";
     public const string ModName = "color_presets";
-    public const string ModVer = "0.1.1";
+    public const string ModVer = "0.1.2";
     private static ColorPresetsMainMod Instance { get; set; }
 
     public override void OnInitialized()

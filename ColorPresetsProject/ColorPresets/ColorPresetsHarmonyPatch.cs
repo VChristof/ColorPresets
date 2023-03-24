@@ -103,20 +103,33 @@ class ColorPresetsHarmonyPatch
     [HarmonyPostfix]
     public static void Postfix(ObjectAssemblyColorPicker __instance)
     {
-        var body = GetGrpBody(__instance);
+        try
+        {
+            var body = GetGrpBody(__instance);
 
-        SquishActiveColors(body);
-        SquishAgencyButtons(body);
-        AddNewOptions(__instance);
-        __instance.GetComponent<RectTransform>().sizeDelta = __instance.GetComponent<RectTransform>().sizeDelta + new Vector2(0, 60);
+            SquishActiveColors(body);
+            SquishAgencyButtons(body);
+            AddNewOptions(__instance);
+            __instance.GetComponent<RectTransform>().sizeDelta = __instance.GetComponent<RectTransform>().sizeDelta + new Vector2(0, 60);
 
-        _ = DelayLoadForUIToBuild(__instance);
+            _ = DelayLoadForUIToBuild(__instance);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e.Message);
+        }
     }
 
     private static async Task DelayLoadForUIToBuild(ObjectAssemblyColorPicker __instance)
     {
         await Task.Delay(1000);
-        LoadData(__instance);
+        try
+        {
+            LoadData(__instance);
+        } catch(Exception e)
+        {
+            Debug.LogError(e.Message);
+        }
     }
 
     private static void AddNewOptions(ObjectAssemblyColorPicker instance)
@@ -326,13 +339,7 @@ class ColorPresetsHarmonyPatch
     {
         ColorList colorList = new ();
         colorList.colorPresets = colorPresets.Values.ToList();
-        Debug.Log("colorList.colorPresets.Count: " + colorList.colorPresets.Count);
-        foreach(ColorPair colorPair in colorList.colorPresets)
-        {
-            Debug.Log("ColorPair: " + colorPair.baseColor.ToString() + " - " + colorPair.accentColor.ToString());
-        }
         string presetsString = JsonConvert.SerializeObject(colorList, Formatting.Indented);
-        Debug.Log(presetsString);
         File.WriteAllText(Application.persistentDataPath + "/ColorPresets.json", presetsString);
     }
 
